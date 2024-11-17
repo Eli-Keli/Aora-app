@@ -2,6 +2,9 @@ import { SplashScreen, Stack } from "expo-router"
 import { useFonts } from "expo-font"
 import { useEffect } from "react"
 
+// Context provider
+import { GlobalProvider } from "../context/GlobalProvider";
+
 SplashScreen.preventAutoHideAsync(); // Prevent splash screen from auto hiding until we are ready to hide it
 
 const RootLayout = () => {
@@ -25,20 +28,22 @@ const RootLayout = () => {
   if (!fontsLoaded && !error) return null // Return null if fonts are not loaded yet
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{
-        headerShown: false // Hide header
-      }} />
-      <Stack.Screen name="(auth)" options={{
-        headerShown: false // Hide header
-      }} />
-      <Stack.Screen name="(tabs)" options={{
-        headerShown: false // Hide header
-      }} />
-      {/* <Stack.Screen name="(/search/[query])" options={{
+    <GlobalProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{
+          headerShown: false // Hide header
+        }} />
+        <Stack.Screen name="(auth)" options={{
+          headerShown: false // Hide header
+        }} />
+        <Stack.Screen name="(tabs)" options={{
+          headerShown: false // Hide header
+        }} />
+        {/* <Stack.Screen name="(/search/[query])" options={{
         headerShown: false // Hide header
       }} /> */}
-    </Stack>
+      </Stack>
+    </GlobalProvider>
   )
 }
 

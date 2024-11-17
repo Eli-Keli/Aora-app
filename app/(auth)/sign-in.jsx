@@ -1,10 +1,20 @@
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { View, Text, ScrollView, Image } from 'react-native'
-import { Link } from 'expo-router'
+import { View, Text, ScrollView, Image, Alert } from 'react-native'
+import { Link, router } from 'expo-router'
+
+// Constants
 import { images } from '../../constants'
+
+// Components
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
+
+// Appwrite SDK
+import { signIn } from '../../lib/appwrite'
+
+// Global context
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const SignIn = () => {
     const [form, setForm] = useState({
@@ -13,8 +23,25 @@ const SignIn = () => {
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const submit = () => {
+    const { setUser, setIsLoggedIn } = useGlobalContext()
 
+    const submit = async () => {
+        if (!form.email || !form.password) return Alert.alert('Error', 'Please fill in all fields')
+
+        setIsSubmitting(true)
+
+        try {
+            const session = await signIn(form.email, form.password)
+            setUser(session)
+            setIsLoggedIn(true)
+
+            Alert.alert('Success', 'User signed in successfully')
+            router.replace('/home')
+        } catch (error) {
+            Alert.alert('Error', error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
 
